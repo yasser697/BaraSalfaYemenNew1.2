@@ -1,10 +1,10 @@
-name: Build Android APK v1.2
+name: Build Android APK
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "*" ]
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -26,15 +26,17 @@ jobs:
         with:
           gradle-version: '8.5'
 
-      - name: Build APK v1.2
-        run: |
-          PROJECT_DIR=$(dirname $(find . -maxdepth 3 -name "settings.gradle" | head -n 1))
-          echo "Found Android project at: $PROJECT_DIR"
-          cd "$PROJECT_DIR"
-          gradle assembleDebug assembleRelease --no-daemon --stacktrace
+      - name: Build Debug & Release APK
+        run: gradle assembleDebug assembleRelease --no-daemon
 
-      - name: Upload APK v1.2
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: BaraAlSalfa-v1.2-APK
-          path: "**/app/build/outputs/apk/**/*.apk"
+          name: BaraAlSalfa-Debug-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BaraAlSalfa-Release-APK
+          path: app/build/outputs/apk/release/app-release.apk
